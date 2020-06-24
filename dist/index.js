@@ -115,26 +115,28 @@ exports.isSet = isSet;
 ;
 // 19.是否是微信浏览器
 function isWeiXin() {
-    var ua = navigator.userAgent.toLowerCase();
+    const ua = navigator.userAgent.toLowerCase();
     return ua.indexOf('microMessenger') > -1;
 }
 exports.isWeiXin = isWeiXin;
 ;
 // 20.是否是移动端
-function isDeviceMobile(ua) {
+function isDeviceMobile() {
+    const ua = navigator.userAgent.toLowerCase();
     return (/android|webos|iphone|ipod|balckberry/i.test(ua));
 }
 exports.isDeviceMobile = isDeviceMobile;
 ;
 // 21.是否是QQ浏览器
-function isQQBrowser(ua) {
+function isQQBrowser() {
+    const ua = navigator.userAgent.toLowerCase();
     return !!ua.match(/mqqbrowser|qzone|qqbrowser|qbwebviewtype/i);
 }
 exports.isQQBrowser = isQQBrowser;
 ;
 // 22.是否是爬虫
 function isSpider() {
-    var ua = navigator.userAgent.toLowerCase();
+    const ua = navigator.userAgent.toLowerCase();
     return (/adsbot|googlebot|bingbot|msnbot|yandexbot|baidubot|robot|careerbot|seznambot|bot|baiduspider|jikespider|symantecspider|scannerlwebcrawler|crawler|360spider|sosospider|sogou web sprider|sogou orion spider/.test(ua));
 }
 exports.isSpider = isSpider;
@@ -233,8 +235,7 @@ exports.download = download;
 ;
 // 29.el是否包含某个class
 function hasClass(el, className) {
-    var reg = new RegExp('(^|\\s)' + className + '(\\s|$)');
-    return reg.test(el.className);
+    return Array.from(el.classList).indexOf(className) > -1 ? true : false;
 }
 exports.hasClass = hasClass;
 ;
@@ -243,9 +244,7 @@ function addClass(el, className) {
     if (hasClass(el, className)) {
         return;
     }
-    var newClass = el.className.split(' ');
-    newClass.push(className);
-    el.className = newClass.join(' ');
+    el.classList.add(className);
 }
 exports.addClass = addClass;
 ;
@@ -254,8 +253,7 @@ function removeClass(el, className) {
     if (!hasClass(el, className)) {
         return;
     }
-    var reg = new RegExp('(^|\\s)' + className + '(\\s|$)', 'g');
-    el.className = el.className.replace(reg, ' ');
+    el.classList.remove(className);
 }
 exports.removeClass = removeClass;
 ;
@@ -676,10 +674,9 @@ exports.union = union;
 ;
 // 46.求两个集合的交集
 function intersect(a, b) {
-    var _this = this;
-    a = this.unique(a);
-    return this.map(a, function (o) {
-        return _this.contains(b, o) ? o : null;
+    a = unique(a);
+    return a.map(function (o) {
+        return contains(b, o) ? o : null;
     });
 }
 exports.intersect = intersect;
@@ -862,7 +859,7 @@ exports.colorToRGB = colorToRGB;
 // 60.追加url参数
 function appendQuery(url, params) {
     var query = '';
-    for (var k in params) {
+    for (const k in params) {
         query += '&' + k + '=' + params[k];
     }
     if (!url.includes('?')) {

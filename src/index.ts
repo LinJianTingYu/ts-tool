@@ -105,12 +105,14 @@ export function isWeiXin():boolean {
 };
 
 // 20.是否是移动端
-export function isDeviceMobile(ua:string):Boolean {
+export function isDeviceMobile():Boolean {
+    const ua = navigator.userAgent.toLowerCase();
     return (/android|webos|iphone|ipod|balckberry/i.test(ua)
     );
 };
 // 21.是否是QQ浏览器
-export function isQQBrowser(ua:string):Boolean {
+export function isQQBrowser():Boolean {
+    const ua = navigator.userAgent.toLowerCase();
     return !!ua.match(/mqqbrowser|qzone|qqbrowser|qbwebviewtype/i);
 };
 
@@ -205,8 +207,7 @@ export function download(url:string) {
 
 // 29.el是否包含某个class
 export function hasClass(el:Element, className:string):Boolean {
-    var reg = new RegExp('(^|\\s)' + className + '(\\s|$)');
-    return reg.test(el.className);
+  return Array.from(el.classList).indexOf(className) > -1 ? true : false
 };
 
 // 30.el添加某个class
@@ -214,9 +215,7 @@ export function addClass(el:Element, className:string) {
     if (hasClass(el, className)) {
         return;
     }
-    var newClass = el.className.split(' ');
-    newClass.push(className);
-    el.className = newClass.join(' ');
+    el.classList.add(className)
 };
 
 // 31.el去除某个class
@@ -224,8 +223,7 @@ export function removeClass(el:Element, className:string) {
     if (!hasClass(el, className)) {
         return;
     }
-    var reg = new RegExp('(^|\\s)' + className + '(\\s|$)', 'g');
-    el.className = el.className.replace(reg, ' ');
+    el.classList.remove(className)
 };
 
 // 32.获取滚动的坐标
@@ -630,7 +628,7 @@ export function sort(arr:[]) {
 // 44.去重
 export function unique(arr:[]):[] {
     if (Array.hasOwnProperty('from')) {
-        return Array.from(new Set(arr));
+      return Array.from(new Set(arr));
     } else {
         var n = {},
             r:[] = [];
@@ -652,15 +650,14 @@ export function union(a:[], b:[]):[] {
 
 // 46.求两个集合的交集
 export function intersect(a:[], b:[]) {
-    var _this = this;
-    a = this.unique(a);
-    return this.map(a, function (o:null) {
-        return _this.contains(b, o) ? o : null;
+    a = unique(a);
+    return a.map(function (o:null) {
+        return contains(b, o) ? o : null;
     });
 };
 
 // 47.删除其中一个元素
-export function remove(arr:string[], ele:string) {
+export function remove(arr:[], ele:null) {
     var index:number = arr.indexOf(ele);
     if (index > -1) {
         arr.splice(index, 1);
@@ -783,16 +780,16 @@ export function insertStr(soure:string, index:number, newStr:string) {
 };
 
 // 58.判断两个对象是否键值相同
-export function isObjectEqual(a, b):Boolean {
-    var aProps = Object.getOwnPropertyNames(a);
-    var bProps = Object.getOwnPropertyNames(b);
+export function isObjectEqual(a:object, b:object):Boolean {
+    var aProps:string[] = Object.getOwnPropertyNames(a);
+    var bProps:string[] = Object.getOwnPropertyNames(b);
 
     if (aProps.length !== bProps.length) {
         return false;
     }
 
     for (var i = 0; i < aProps.length; i++) {
-        var propName = aProps[i];
+        var propName:string = aProps[i];
 
         if (a[propName] !== b[propName]) {
             return false;
